@@ -1,15 +1,71 @@
 import { assets } from "@/assets/assets";
+import RelatedDoctors from "@/components/RelatedDoctors";
 import config from "@/config/config";
 import { useDoctorStore } from "@/store/doctorStore";
 import { TDoctor } from "@/types/doctorType";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 
+type  TDocTimeSlot = {
+  dateTime: Date; 
+  time: string; 
+}[]
+
 const Appointment = () => {
   const  {drId} = useParams();
   const {doctors} = useDoctorStore();
 
   const [doctorInfo, setDoctorInfo] = useState<TDoctor>();
+  const [docSlots, setDocSlots] = useState<TDocTimeSlot[]>([]);
+  const [slotIndex, setSlotIndex] = useState(0);
+  const [slotTime, setSlotTime] = useState('')
+
+  const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+
+  const getAvailableSlot = () => {
+    setDocSlots([]);  // Reset the slots
+  
+    let today = new Date();
+    let allSlots = [];  // Temporary array to collect all time slots
+  
+    for (let i = 0; i < 7; i++) {
+      let currentDate = new Date(today);
+      currentDate.setDate(today.getDate() + i);
+  
+      let endTime = new Date(currentDate);
+      endTime.setHours(21, 0, 0, 0);
+  
+      // Set starting time for today and future days
+      if (today.getDate() === currentDate.getDate()) {
+        currentDate.setHours(currentDate.getHours() > 10 ? currentDate.getHours() + 1 : 10);
+        currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
+      } else {
+        currentDate.setHours(10);
+        currentDate.setMinutes(0);
+      }
+  
+      let timeSlots = [];
+      while (currentDate < endTime) {
+        let formatedTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  
+        // Add time slot to the day's array
+        timeSlots.push({
+          dateTime: new Date(currentDate),
+          time: formatedTime,
+        });
+  
+        // Increment by 30 minutes
+        currentDate.setMinutes(currentDate.getMinutes() + 30);
+      }
+  
+      // Add the day's time slots to allSlots array
+      allSlots.push(timeSlots);
+    }
+  
+    // Set the docSlots state after the loop completes
+    setDocSlots(allSlots);
+  };
+  
 
   const fetchDocTorInfo = () => {
     const docInfo = doctors.find((doc) => doc._id === drId);
@@ -19,6 +75,15 @@ const Appointment = () => {
   useEffect(() => {
     fetchDocTorInfo();
   }, [doctors, drId])
+
+  useEffect(() => {
+    getAvailableSlot();
+  }, [doctorInfo])
+
+  useEffect(() => {
+    console.log('docSlots', docSlots);
+    
+  },[docSlots])
   
   return (
     <div>
@@ -42,6 +107,42 @@ const Appointment = () => {
           </p>
         </div>
       </div>
+
+      {/* Booking slots */}
+      <div className="sm:ml-72 sm:pl-4 mt-4 font-medium text-gray-700">
+        <p>Booking slots</p>
+        <div className="flex gap-3 items-center w-full overflow-x-scroll mt-4">
+          {
+            docSlots.length && docSlots.map((daySlots, index) => (
+              <div
+                key={index} 
+                onClick={() => setSlotIndex(index) }
+                className={`text-center py-4 min-w-16 rounded-full cursor-pointer ${slotIndex == index ? "bg-primary_base text-white":"border border-gray-200"}`}
+              >
+                <p className="text-sm">{daySlots[0] && daysOfWeek[daySlots[0].dateTime.getDay()]}</p>
+                <p className="text-sm">{daySlots[0] && daySlots[0].dateTime.getDate()}</p>
+
+                {/* <p>{daysOfWeek[new Date(daySlots[0].dateTime).getDay()]}</p>
+                <p>{new Date(daySlots[0].dateTime).getDate()}</p> */}
+              </div>
+            ))
+          }
+        </div>
+        <div className=" flex items-center gap-3  w-full overflow-x-scroll mt-4">
+          {
+            docSlots.length && docSlots[slotIndex].map((Item, index) => (
+              <p 
+                key={index}
+                onClick={() => setSlotTime(Item.time)} 
+                className={`text-sm font-light flex-shrink-0 px-5 py-2 rounded-full cursor-pointer ${Item.time === slotTime ? "bg-primary_base text-white": "text-gray-400 border border-gray-300"} `}>
+                {Item.time.toLowerCase()}
+              </p>
+            ))
+          }
+        </div>
+        <button className="bg-primary_base text-white text-sm font-light px-14 py-3 rounded-full my-6">Book an Appointment</button>
+      </div>
+      <RelatedDoctors drId={drId!} speciality = {doctorInfo?.speciality!}/>
     </div>
   )
 }

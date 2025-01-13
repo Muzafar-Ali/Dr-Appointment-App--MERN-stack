@@ -5,10 +5,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.active hr{
-  @apply block
-}
-
 @layer base {
   :root {
 
@@ -118,10 +114,20 @@
   }
   body {
     @apply bg-background text-foreground;
-    @apply max-w-[1280px] mx-auto 
+    @apply max-w-[1280px] mx-auto px-5 xl:px-0
   }
 }
 
 ::-webkit-scrollbar{
   @apply hidden
+}
+
+.active hr{
+  @apply block
+}
+
+@media (max-width:740px) {
+  .active p{
+    @apply text-white bg-primary_base
+  }
 }
