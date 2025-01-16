@@ -55,9 +55,9 @@ const Navbar
           : <button onClick={() => navigate("/login")} className="bg-primary_base text-white px-8 py-3 rounded-xl font-light hidden md:block">create account</button>
         }
         {/* Mobile Menu */}
-        {/* <div className="md:hidden" onClick={() => setShowMenu(!showMenu)}> */}
-          <img src={assets.menu_icon} alt="menu" className="w-6" onClick={() => setShowMenu(!showMenu)}/>
-        {/* </div> */}
+        <div className="md:hidden" onClick={() => setShowMenu(!showMenu)}>
+          <img src={assets.menu_icon} alt="menu" className="w-6"/>
+        </div>
         <MobileMenu setShowMenu={setShowMenu} showMenu={showMenu}/>
 
       </div>

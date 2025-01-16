@@ -24,7 +24,7 @@ const RelatedDoctors = ({drId, speciality}: { drId: string, speciality: string})
             key={item._id} 
             className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
             onClick={() => { 
-              navigate(`appointment/${item._id}`)
+              navigate(`/appointment/${item._id}`)
               scrollTo(0,0) 
             }}
           >
@@ -39,16 +39,6 @@ const RelatedDoctors = ({drId, speciality}: { drId: string, speciality: string})
           </div>
         ))}
       </div>
-      {/* <div>
-        <button 
-          className="bg-blue-50 text-gray-600 px-12 py-3 rounded-full mt-10" 
-          onClick={() =>{
-            navigate("/doctors"); 
-            scrollTo(0,0)
-          }}>
-            See all
-          </button>
-      </div> */}
     </div>
   )
 }

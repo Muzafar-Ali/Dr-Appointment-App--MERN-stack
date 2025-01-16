@@ -4,10 +4,12 @@ import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 
 const Doctors = () => {
-  const [filterDoctors, setFilterDoctors] = useState<TDoctor[]>([])
   const navigate = useNavigate();
   const { speciality } = useParams();
   const { doctors } = useDoctorStore();
+
+  const [filterDoctors, setFilterDoctors] = useState<TDoctor[]>([])
+  const [showFilters, setShowFilters] = useState<boolean>(false)
 
   const applyFilter = () => {
     if (speciality) {
@@ -26,8 +28,17 @@ const Doctors = () => {
     <div>
       <p className=" text-gray-600">Browse through the doctors specialist.</p>
       <div className="flex flex-col sm:flex-row items-start gap-5 mt-5">
+        {/* Filters button for mobile screen starts */}
+        <button
+          onClick={() => setShowFilters((prev) => !prev)} 
+          className={`${showFilters ? "bg-primary_base text-white": ""} py-1 px-3 border rounded text-sm transition-all sm:hidden`}
+        >
+          Filters
+        </button>
+        {/* Filters button for mobile screen ends */}
+
         {/* left side - Filters*/}
-        <div className="flex flex-col gap-4 text-sm text-gray-600">
+        <div className={`${showFilters ? "flex":"hidden sm:flex"} flex-col gap-4 text-sm text-gray-600`}>
           <p 
             className={`w-[80vw] sm:w-[100%] pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer ${speciality === "General physician" ? "bg-indigo-100 text-black" : ""}`}
             onClick={() => speciality === 'General physician' ? navigate('/doctors') : navigate('/doctors/General physician')}
@@ -69,7 +80,7 @@ const Doctors = () => {
             <div 
               key={item._id} 
               className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"
-              onClick={() => navigate(`appointment/${item._id}`)}
+              onClick={() => navigate(`/appointment/${item._id}`)}
             >
               <img src={item.image} alt={item.name} className="bg-blue-50"/>
               <div className="p-4">
