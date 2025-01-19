@@ -9,7 +9,12 @@ const config = {
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
   cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET,
 
-  environmentNode: process.env.NODE_ENV || "development",
+  environmentNode: process.env.NODE_ENV,
+  secure: process.env.NODE_ENV === "development" ? false : true,
+  jwtSecret: process.env.JWT_SECRET,
+  jwtTokenAge: 24*60*60*1000,
+  saltWorkFactor: process.env.SALT,
+
 };
 
 export default config;

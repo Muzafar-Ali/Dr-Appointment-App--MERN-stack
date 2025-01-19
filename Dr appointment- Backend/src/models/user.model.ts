@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { TUserDocument } from "../types/user.type.js";
+import bcrypt from "bcrypt";
 
 const userSchema = new mongoose.Schema<TUserDocument>({
   name: {
@@ -41,9 +42,26 @@ const userSchema = new mongoose.Schema<TUserDocument>({
     type: String,
     required: true,
     enum: ["admin", "doctor", "user"],
-    // default: "user"
+    default: "user"
   }
   
+})
+
+userSchema.pre('save', async function (next) {
+  let user = this as TUserDocument;
+  if(!user.isModified('password')) return next();
+
+  try {
+    const salt = await bcrypt.genSalt(10); 
+    const hashPasword = await bcrypt.hash(user.password, salt);
+    user.password = hashPasword;
+
+    next()   
+
+  } catch (error: any) {
+    console.error('Failed to hash the password: ', error);
+    next(error);    
+  }
 })
 
            //  if model created use it || otherwise create it       

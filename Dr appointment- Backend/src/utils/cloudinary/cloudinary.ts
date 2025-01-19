@@ -4,7 +4,7 @@ import config from '../../config/config.js';
 const connectCloudinary = async () => {
 
   cloudinary.config({
-    cloud_name: config.CloudinaryCloudNAme,
+    cloud_name: config.CloudinaryCloudName,
     api_key: config.cloudinaryApiKey,
     api_secret: config.cloudinaryApiSecret
   });

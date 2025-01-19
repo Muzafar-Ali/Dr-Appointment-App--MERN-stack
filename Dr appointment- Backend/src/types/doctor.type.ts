@@ -15,6 +15,8 @@ export type TDoctor = {
   phone: string;
   slotsBooked: Object;
   gender: string;
+  role: "admin" | "doctor" | "user";
+
 }
 
 export type TDoctorDocument = TDoctor & mongoose.Document & {
