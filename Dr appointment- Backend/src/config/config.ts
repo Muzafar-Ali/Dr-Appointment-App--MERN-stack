@@ -4,6 +4,8 @@ dotenv.config();
 const config = {
   port: process.env.PORT || 4000,
   dbUri: process.env.MONGO_URI,
+  corsOrigin: process.env.CLIENT_URL,
+
   // cloudinary
   CloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME,
   cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,

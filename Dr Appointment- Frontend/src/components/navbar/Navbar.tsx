@@ -3,12 +3,11 @@ import { assets } from "../../assets/assets"
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
 
-const Navbar
- = () => {
+const Navbar = () => {
   const navigate = useNavigate();
+  
   const [token, setToken] = useState<boolean>(true)
   const [showMenu, setShowMenu] = useState<boolean>(false)
-
   
   return (
     <div className="flex items-center justify-between text-sm py-4 mb-5 border-b border-b-gray-400">

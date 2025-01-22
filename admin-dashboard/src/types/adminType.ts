@@ -1,5 +1,3 @@
-import mongoose from "mongoose";
-
 export type TDoctor = {
   name: string;
   email: string;
@@ -18,7 +16,11 @@ export type TDoctor = {
   role: "admin" | "doctor" | "user";
 }
 
-export type TDoctorDocument = TDoctor & mongoose.Document & {
-  createdAt: Date;
-  updatedAt: Date;
+
+export type TAdminState = {
+  user: TDoctor | null;
+  loading: boolean;
+  login: (userInput: {email: string, password: string}) => void
+  logout: () => void
+  addDoctor: (formDta: FormData) => void
 }

@@ -5,10 +5,17 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
 import adminRoutes from "./routes/admin.routes.js"
+import userRoutes from "./routes/user.routes.js"
+import cors from 'cors';
 
 
 const app = express();
 const port = config.port
+
+app.use(cors({
+  origin: `${config.corsOrigin}`,
+  credentials: true
+}));
 
 // Middlewares
 app.use(express.json());
@@ -16,14 +23,9 @@ app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 app.use((morgan("dev")))
 
-
-// health check route
-app.get('/api/v1/health', (req: any, res: any) => {
-  res.send('Dr appointment app responds OK!');
-});
-
 // Routes
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/user", userRoutes);
 
 // Error middleware 
 app.use(errorMiddleware)

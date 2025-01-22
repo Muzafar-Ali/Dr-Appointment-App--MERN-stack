@@ -16,11 +16,21 @@ declare global {
 
 const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const token = req.cookies.token || req.headers.authorization;
+    let token = req.cookies.token;
+    
+    if(req.cookies && req.cookies.token) {
+      token = req.cookies.token
+    }
+
+    if(!token && req.headers.authorization) {
+      token = req.headers.authorization.split(' ')[1]
+    }
+    
     if(!token) throw new ErrorHandler(401,'user not authorized' ) ;
 
     const decoded = jwt.verify(token, config.jwtSecret!) as jwt.JwtPayload;
     if(!decoded) throw new ErrorHandler(401, 'invalid token') ;
+    
       req.user = {
         id: decoded.id,
         role: decoded.role

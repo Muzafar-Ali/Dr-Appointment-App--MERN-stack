@@ -1,4 +1,4 @@
-import { escape } from "lodash";
+import escape  from "lodash/escape.js";
 import { z } from "zod";
 
 export const createDoctorSchema = z.object({
@@ -28,7 +28,17 @@ export const createDoctorSchema = z.object({
     })
     .min(10, {message: "Phone number must be at least 10 characters long"}),
     
-    address: z.object({}).required(),
+    address: z.object({
+      line1: z.string({
+        required_error: "Address line 1 is required",
+        invalid_type_error: "Address line 1 must be a string"
+      }).min(3, {message: "Address line 1 must be at least 3 characters long"}),
+
+      line2: z.string({
+        required_error: "Address line 2 is required",
+        invalid_type_error: "Address line 2 must be a string"
+      }).min(3, {message: "Address line 2 must be at least 3 characters long"}),
+    }).required(),
     
     speciality: z.string({
       required_error: "Specialization is required", 
@@ -51,12 +61,11 @@ export const createDoctorSchema = z.object({
     .min(3, {message: "Degree must be at least 3 characters long"})
     .transform((value) => escape(value.trim())), // Sanitizing by trimming and escaping HTML
 
-    
     experience: z.string({
       required_error: "Experience is required",
       invalid_type_error: "Experience must be a string"
     })
-    .min(3, {message: "Experience must be at least 3 characters long"})
+    .min(1, {message: "Experience must be at least 1 characters long"})
     .transform((value) => escape(value.trim())), // Sanitizing by trimming and escaping HTML
 
     available: z.boolean({
@@ -76,15 +85,27 @@ export const createDoctorSchema = z.object({
       invalid_type_error: "Fees must be a number"
     }).min(1, {message: "Fees must be at least 1"}),
     
-    image: z.string({
-      required_error: "Image is required",
-      invalid_type_error: "Image must be a string"
-    }).min(3, {message: "Image must be at least 3 characters long"}),
-    
     role: z.object({
      role: z.enum(["admin", "doctor", "user"]).default("doctor"),
     }).optional()
   })
 })
 
+export const AdminLoginSchema = z.object({
+  body: z.object({
+    email: z.string({
+      required_error: "Email is required",
+    })
+    .email({message: "Invalid email address"})
+    .transform((value) => escape(value.trim().toLocaleLowerCase())), // Trimming and escaping
+
+    password: z.string({
+      required_error: "Password is required"
+    })
+    .min(6, {message: "Password must be at least 6 characters long"})
+    .transform((value) => escape(value.trim())),
+  })
+});
+
 export type TDoctorZod = z.infer<typeof createDoctorSchema>
+export type TAdminLoginZod = z.infer<typeof AdminLoginSchema>

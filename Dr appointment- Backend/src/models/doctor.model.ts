@@ -93,7 +93,7 @@
     const doctor = this as TDoctorDocument;
 
     try {
-      const isMatch = await bcrypt.compare(candidatePassword, doctor.password);
+      const isMatch = await bcrypt.compare(candidatePassword, doctor.password);      
       return isMatch;
       
     } catch (error) {

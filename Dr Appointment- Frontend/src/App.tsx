@@ -10,8 +10,6 @@ import Login from './pages/auth/Login'
 import NavbarDesktop from './components/navbar/Navbar'
 import Footer from './components/Footer'
 
-
-
 function App() {
 
   return (
@@ -21,13 +19,13 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About />} />
-        <Route path='appointment/:drId' element={<Appointment />} />
-        <Route path='contact' element={<Contact />} />
-        <Route path='doctors' element={<Doctors />} />
-        <Route path='doctors/:speciality' element={<Doctors />} />
-        <Route path='my-appointments' element={<MyAppointments />} />
-        <Route path='my-profile' element={<MyProfile />} />
-        <Route path='login' element={<Login />} />
+        <Route path='/appointment/:drId' element={<Appointment />} />
+        <Route path='/contact' element={<Contact />} />
+        <Route path='/doctors' element={<Doctors />} />
+        <Route path='/doctors/:speciality' element={<Doctors />} />
+        <Route path='/my-appointments' element={<MyAppointments />} />
+        <Route path='/my-profile' element={<MyProfile />} />
+        <Route path='/login' element={<Login />} />
       </Routes>
       <Footer/>
     </div>
