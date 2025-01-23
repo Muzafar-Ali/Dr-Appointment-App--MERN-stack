@@ -15,7 +15,7 @@ const AddDoctor = () => {
   const [address1, setAddress1] = useState('')
   const [address2, setAddress2] = useState('')
 
-  const {addDoctor} = useAdminStore();
+  const {addDoctor, loading} = useAdminStore();
 
   const specialities = ["General Physician", "Gastroenterologist", "Neurologist", "Dermatologist", "Pediatrician", "Gynecologist"]
 
@@ -37,12 +37,7 @@ const AddDoctor = () => {
     formData.append('speciality', speciality)
     formData.append('degree', degree)
     formData.append('address', JSON.stringify({ line1: address1, line2: address2 }))
-    // formData.append('address', JSON.stringify({ line1: address1, line22: address2 }))
-
-    // formData.forEach((value, key) => {
-    //   console.log(key, value)
-    // })
-    
+        
     addDoctor(formData)
   }
   
@@ -171,9 +166,15 @@ const AddDoctor = () => {
             onChange={(e) => setAbout(e.target.value)} value={about}
           />
         </div>
-
-        <button type="submit" className="bg-primary px-10 py-3 mt-4 text-white rounded-full">Add Doctor</button>
-
+          {
+            loading ? (
+              <button type="submit" disabled className="bg-primary px-10 py-3 mt-4 text-white rounded-full">
+                Please Wait  <img width={20} height={20} alt='' className='inline-block bg-transparent' src="/spinner.svg" />
+              </button>
+            ) : (
+              <button type="submit" className="bg-primary px-10 py-3 mt-4 text-white rounded-full">Add Doctor</button>
+            )
+          }
        </div>
     </form>
   )

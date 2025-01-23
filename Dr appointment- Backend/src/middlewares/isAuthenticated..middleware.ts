@@ -18,15 +18,12 @@ const isAuthenticated = async (req: Request, res: Response, next: NextFunction) 
   try {
     let token = req.cookies.token;
     
-    if(req.cookies && req.cookies.token) {
-      token = req.cookies.token
-    }
-
+    // If the token is not in cookies but is sent in the headers (Authorization header)
     if(!token && req.headers.authorization) {
       token = req.headers.authorization.split(' ')[1]
     }
     
-    if(!token) throw new ErrorHandler(401,'user not authorized' ) ;
+    if (!token) throw new ErrorHandler(401, 'user not authenticated');
 
     const decoded = jwt.verify(token, config.jwtSecret!) as jwt.JwtPayload;
     if(!decoded) throw new ErrorHandler(401, 'invalid token') ;

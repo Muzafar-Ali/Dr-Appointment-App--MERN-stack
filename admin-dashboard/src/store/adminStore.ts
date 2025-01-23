@@ -3,18 +3,20 @@ import { TAdminState } from "../types/adminType";
 import axios from "axios";
 import config from "../config/config";
 import { toast } from "react-toastify";
-import { addDoctorSchema } from "../schema/admin.schema";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
   user:  null,
+  doctors: [],
   loading: false,
   login: async (userInput: {email: string, password: string}) => {
 
     set({ loading: true })
     
     try {
-      const response = await axios.post(`${config.baseUri}/api/v1/admin/login`, userInput)
+      const response = await axios.post(`${config.baseUri}/api/v1/admin/login`, userInput, {
+        withCredentials: true
+      })
            
       if (response.data.success) {
         set({ user: response.data.user })
@@ -38,7 +40,7 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
       });
           
       if (response.data.success) {
-        localStorage.removeItem("user");
+        localStorage.removeItem("admin");
         set({ user: null })
         set({ loading: false })
       }
@@ -56,20 +58,6 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
     set({ loading: true }) 
 
     try {
-      formData.forEach((value, key) => {
-        console.log('add doc',key, value)
-      })
-      
-      // convert the FormData entries into a plain object:
-      const formDataObj = Object.fromEntries(formData.entries());  
-      formDataObj.address = JSON.parse(formDataObj.address as string);
-      formDataObj.fees = Number(formDataObj.fees);
-      
-      // const {success, data, error} = addDoctorSchema.safeParse({...formDataObj, fees: Number(formDataObj.fees)})
-      // console.log('success', success);
-      // console.log('data', data);
-      // console.log('error', error);
-
       const response = await axios.post(`${config.baseUri}/api/v1/admin/doctor`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -91,10 +79,60 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
         toast.error(error.message)
       }
     }
-  }
+  },
+  getAllDoctors: async () => {
+    set({ loading: true })
+
+    try {
+      const response = await axios.get(`${config.baseUri}/api/v1/admin/doctors`, {
+        withCredentials: true,
+      })
+
+      if (response.data.success) {
+        set({ loading: false })
+        set({ doctors: response.data.doctors })
+      }
+      
+
+    } catch (error: any) {
+      set({ loading: false })
+
+      if(error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+    }
+  },
+  updateDoctorAvailability: async (doctorId: string, isAvailable: boolean) => {
+    set({ loading: true })
+    
+    try {
+      const response = await axios.patch(`${config.baseUri}/api/v1/admin/doctors`, {
+        availability: isAvailable,
+        id: doctorId
+      }, {
+        withCredentials: true,
+      })
+
+      if (response.data.success) {
+        set({ loading: false })
+        toast.success(response.data.message)
+      }
+
+    } catch (error: any) {
+      set({ loading: false })
+
+      if(error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+    }
+  },
 }), 
 {
-  name: "user",
+  name: "admin",
   storage: createJSONStorage(() => localStorage),
 }
 ))

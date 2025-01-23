@@ -4,9 +4,10 @@ import { connectDB } from "./utils/connectDB.js";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import { errorMiddleware } from "./middlewares/error.middleware.js";
+import cors from 'cors';
 import adminRoutes from "./routes/admin.routes.js"
 import userRoutes from "./routes/user.routes.js"
-import cors from 'cors';
+import doctorRoutes from "./routes/doctor.routes.js"
 
 
 const app = express();
@@ -26,6 +27,7 @@ app.use((morgan("dev")))
 // Routes
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/doctor", doctorRoutes);
 
 // Error middleware 
 app.use(errorMiddleware)

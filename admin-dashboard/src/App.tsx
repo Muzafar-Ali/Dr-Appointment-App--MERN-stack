@@ -1,4 +1,3 @@
-import { ToastContainer } from "react-toastify"
 import Login from "./pages/Login"
 import { useAdminStore } from "./store/adminStore"
 import Navbar from "./components/Navbar";
@@ -8,6 +7,8 @@ import Dashboard from "./pages/admin/Dashboard";
 import Appointments from "./pages/admin/Appointments";
 import AddDoctor from "./pages/admin/AddDoctor";
 import DoctorList from "./pages/admin/DoctorList";
+import { ToastContainer } from "react-toastify"
+import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const {user} = useAdminStore();

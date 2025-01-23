@@ -1,6 +1,5 @@
 import { FormEvent, useState } from "react"
 import { useAdminStore } from "../store/adminStore"
-import { useNavigate } from "react-router-dom"
 
 const Login = () => {
   const [state, setState] = useState<string | undefined>("admin")

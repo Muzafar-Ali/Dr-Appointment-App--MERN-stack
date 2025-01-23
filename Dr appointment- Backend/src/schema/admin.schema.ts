@@ -23,10 +23,10 @@ export const createDoctorSchema = z.object({
     .min(6, {message: "Password must be at least 6 characters long"})
     .transform((value) => escape(value.trim())),
 
-    phone: z.string({
-      required_error: "Phone number is required"
-    })
-    .min(10, {message: "Phone number must be at least 10 characters long"}),
+    // phone: z.string({
+    //   required_error: "Phone number is required"
+    // })
+    // .min(10, {message: "Phone number must be at least 10 characters long"}),
     
     address: z.object({
       line1: z.string({
@@ -73,12 +73,12 @@ export const createDoctorSchema = z.object({
       invalid_type_error: "Available must be a boolean"
     }).default(true),
 
-    gender: z.string({
-      required_error: "Gender is required",
-      invalid_type_error: "Gender must be a string"
-    })
-    .min(3, {message: "Gender must be at least 3 characters long"})
-    .transform((value) => escape(value.trim())), // Sanitizing by trimming and escaping HTML
+    // gender: z.string({
+    //   required_error: "Gender is required",
+    //   invalid_type_error: "Gender must be a string"
+    // })
+    // .min(3, {message: "Gender must be at least 3 characters long"})
+    // .transform((value) => escape(value.trim())), // Sanitizing by trimming and escaping HTML
     
     fees: z.number({
       required_error: "Fees is required", 

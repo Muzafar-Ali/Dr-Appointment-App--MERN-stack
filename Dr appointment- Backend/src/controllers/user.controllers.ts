@@ -8,9 +8,7 @@ export const userLoginHandler = async (req: Request, res: Response, next: NextFu
     const { email, password } = req.body;
     if(!email || !password) throw new Error("Please provide email and password");
 
-    const user = await DoctorModel.findOne({ email });
-    console.log('user', user);
-    
+    const user = await DoctorModel.findOne({ email });    
     if(!user) throw new Error("Invalid credentials");
 
     generateJwtTokenAndSetCookie(res, user._id, user.role)

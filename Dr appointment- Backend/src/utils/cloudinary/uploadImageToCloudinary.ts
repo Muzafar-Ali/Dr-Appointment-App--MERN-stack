@@ -8,11 +8,13 @@ cloudinary.config({
   api_secret: config.cloudinaryApiSecret
 });
 
-const uploadImageToCloudinary = async ( image:Express.Multer.File, subFolder: string ) => {
+const uploadImageToCloudinary = async ( image: Express.Multer.File, subFolder: string ) => {
   try {
+
+    // Convert buffer to data URI
     const base64Image = Buffer.from(image.buffer).toString("base64");
     const dataURI = `data:${image.mimetype};base64,${base64Image}`;
-  
+    
     const imageUpload = await cloudinary.uploader.upload(dataURI, {
       resource_type: "image",
       public_id: `image${Math.round(Math.random() * 1E9)}`,

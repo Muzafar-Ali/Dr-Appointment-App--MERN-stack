@@ -8,14 +8,11 @@ import generateJwtTokenAndSetCookie from "../utils/generateJwtTokenAndSetCookie.
 
 export const addDoctorHandler = async( req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('req.body', req.body);
-    console.log('req.file', req.file);
-    
     const doctorData = req.body;
     const image = req.file;
           
-    // const doctor = await createDoctor(doctorData, image);    
-    // if(!doctor) throw new ErrorHandler(404, "Doctor not created");
+    const doctor = await createDoctor(doctorData, image);    
+    if(!doctor) throw new ErrorHandler(404, "Doctor not created");
       
     res.status(201).json({
       success: true,
@@ -62,6 +59,21 @@ export const logoutAdminHandler = async(req: Request, res: Response, next: NextF
     })
   } catch (error) {
     console.error('logoutAdminHandler error: ', error);
+    next(error);
+  }
+}
+
+export const getAllDoctorsHAndler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const doctors = await DoctorModel.find({}).select("-password");
+    
+    res.status(200).json({
+      success: true,
+      message: "Doctors fetched successfully",
+      doctors
+    })
+  } catch (error) {
+    console.error('getAllDoctorsHAndler error: ', error);
     next(error);
   }
 }

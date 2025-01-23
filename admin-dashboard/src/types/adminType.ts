@@ -1,4 +1,5 @@
 export type TDoctor = {
+  _id: string;
   name: string;
   email: string;
   password: string;
@@ -19,8 +20,11 @@ export type TDoctor = {
 
 export type TAdminState = {
   user: TDoctor | null;
+  doctors: TDoctor[];
   loading: boolean;
-  login: (userInput: {email: string, password: string}) => void
-  logout: () => void
-  addDoctor: (formDta: FormData) => void
+  login: (userInput: {email: string, password: string}) => void;
+  logout: () => void;
+  addDoctor: (formDta: FormData) => void;
+  getAllDoctors: () => void;
+  updateDoctorAvailability: (doctorId: string, isAvailable: boolean) => void;
 }

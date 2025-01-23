@@ -8,14 +8,16 @@ export const createDoctor = async (doctorData: TDoctorZod["body"], image: Expres
   try {
     const doctorExist = await DoctorModel.findOne({email: doctorData.email})
     if(doctorExist) throw new ErrorHandler(409, "Doctor already exist")
-
+    
+    // check if image is provided
+    if(!image) throw new ErrorHandler(400, "Image is required")
+    
     // upload image to cloudinary
-    // const imageUrl = await uploadImageToCloudinary(image!, "doctors")
+    const imageUrl = await uploadImageToCloudinary(image, "doctors")
       
     const newDoctor = await DoctorModel.create({
       ...doctorData, 
-      // image: imageUrl
-      // address: JSON.parse(doctorData.address)
+      image: imageUrl
     })
    
     return omit(newDoctor.toJSON(),"password") 
