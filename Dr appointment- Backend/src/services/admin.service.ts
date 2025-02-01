@@ -25,6 +25,6 @@ export const createDoctor = async (doctorData: TDoctorZod["body"], image: Expres
   } catch (error) {
     console.error('createDoctor error: ', error);
     if(error instanceof ErrorHandler) throw error // Propagate known errors
-    // throw new ErrorHandler(500, "Internal server error") // Handle unknown errors
+    throw new ErrorHandler(500, "Internal server error") // Handle unknown errors
   }
 }

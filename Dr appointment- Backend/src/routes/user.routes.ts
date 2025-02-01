@@ -1,10 +1,17 @@
 import { Router } from "express";
-import { userLoginHandler } from "../controllers/user.controllers.js";
-import validateRequest from "../middlewares/validateAndSanitizeData.middleware.js";
-import { AdminLoginSchema } from "../schema/admin.schema.js";
+import { getUserProfileHandler, registerUserHandler, updateUserProfileHandler, userLoginHandler, userLogoutHandler } from "../controllers/user.controllers.js";
+import { adminLoginSchema } from "../schema/admin.schema.js";
+import validateAndSanitizeData from "../middlewares/validateAndSanitizeData.middleware.js";
+import { registerUserSchema, updateUserPrifleSchema } from "../schema/user.schema.js";
+import { upload } from "../middlewares/multer.middleware.js";
+import isAuthenticated from "../middlewares/isAuthenticated..middleware.js";
 
 const route = Router();
 
-route.post("/login", validateRequest(AdminLoginSchema), userLoginHandler)
+route.post("/register", upload.single('image'), validateAndSanitizeData(registerUserSchema), registerUserHandler)
+route.post("/login", validateAndSanitizeData(adminLoginSchema), userLoginHandler)
+route.post("/logout", userLogoutHandler)
+route.get("/profile", isAuthenticated, getUserProfileHandler)
+route.patch("/profile", isAuthenticated, upload.single('image'), validateAndSanitizeData(updateUserPrifleSchema), updateUserProfileHandler)
 
 export default route;

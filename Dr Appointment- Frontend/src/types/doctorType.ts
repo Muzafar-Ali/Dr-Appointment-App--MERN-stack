@@ -12,3 +12,8 @@ export type TDoctor = {
     line2: string;
   };
 }
+
+export type TUseDoctorStore = {
+  doctors: TDoctor[];
+  setDoctors: (doctors: TDoctor[]) => void;
+}

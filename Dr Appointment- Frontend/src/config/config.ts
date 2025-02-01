@@ -3,7 +3,8 @@ const config = {
   currencyCode : 'USD',
   maxDecimalPlaces : 2,
   culture : 'en-US',
-  useGrouping : true
+  useGrouping : true,
+  baseUri: import.meta.env.VITE_BASEURI,
 }
 
 export default config;

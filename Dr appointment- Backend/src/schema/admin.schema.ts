@@ -91,7 +91,7 @@ export const createDoctorSchema = z.object({
   })
 })
 
-export const AdminLoginSchema = z.object({
+export const adminLoginSchema = z.object({
   body: z.object({
     email: z.string({
       required_error: "Email is required",
@@ -108,4 +108,4 @@ export const AdminLoginSchema = z.object({
 });
 
 export type TDoctorZod = z.infer<typeof createDoctorSchema>
-export type TAdminLoginZod = z.infer<typeof AdminLoginSchema>
+export type TAdminLoginZod = z.infer<typeof adminLoginSchema>

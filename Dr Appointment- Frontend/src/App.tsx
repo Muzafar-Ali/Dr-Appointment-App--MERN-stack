@@ -9,12 +9,15 @@ import MyProfile from './pages/MyProfile'
 import Login from './pages/auth/Login'
 import NavbarDesktop from './components/navbar/Navbar'
 import Footer from './components/Footer'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
 
   return (
     // <div className='mx-4 sm:mx[10%]'>
     <div className=''>
+      <ToastContainer />
       <NavbarDesktop />
       <Routes>
         <Route path='/' element={<Home />} />

@@ -6,7 +6,7 @@ import DoctorModel from "../models/doctor.model.js";
 import omit from "lodash/omit.js";
 import generateJwtTokenAndSetCookie from "../utils/generateJwtTokenAndSetCookie.js";
 
-export const addDoctorHandler = async( req: Request, res: Response, next: NextFunction) => {
+export const addDoctorHandler = async( req: Request<{}, {}, TDoctorZod["body"]>, res: Response, next: NextFunction) => {
   try {
     const doctorData = req.body;
     const image = req.file;
@@ -74,6 +74,36 @@ export const getAllDoctorsHAndler = async (req: Request, res: Response, next: Ne
     })
   } catch (error) {
     console.error('getAllDoctorsHAndler error: ', error);
+    next(error);
+  }
+}
+
+
+export const adminLoginHandler = async (req: Request<{}, {}, TAdminLoginZod["body"]>, res: Response, next: NextFunction) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await DoctorModel.findOne({ email });    
+    if(!user) throw new ErrorHandler( 404, "Invalid credentials");
+
+    
+    const isMatch = await user.comparePassword(password);
+    if(!isMatch) throw new ErrorHandler(404, "Invalid credentials");
+
+    generateJwtTokenAndSetCookie(res, user._id, user.role)
+
+    res.status(200).json({
+      success: true,
+      message: "User logged in successfully",
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        Image: user.image,
+      }
+    })
+  } catch (error) {
+    console.error('userLogin error: ', error);
     next(error);
   }
 }

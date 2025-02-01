@@ -16,7 +16,7 @@ declare global {
 
 const isAuthenticated = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    let token = req.cookies.token;
+    let token = req.cookies.utoken;
     
     // If the token is not in cookies but is sent in the headers (Authorization header)
     if(!token && req.headers.authorization) {

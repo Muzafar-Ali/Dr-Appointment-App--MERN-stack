@@ -7,7 +7,6 @@ export const updateAvailability = async ( req: Request, res: Response, next: Nex
     const { id, availability } = req.body;
     
     const doctor = await DoctorModel.findByIdAndUpdate(id, { available: availability }, { new: true });
-    console.log('doctor', doctor);
     
     if(!doctor) throw new ErrorHandler(404,"Doctor not found");
 

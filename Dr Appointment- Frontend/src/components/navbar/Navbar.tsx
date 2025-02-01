@@ -2,11 +2,12 @@ import { Link, NavLink, useNavigate } from "react-router-dom"
 import { assets } from "../../assets/assets"
 import { useState } from "react";
 import MobileMenu from "./MobileMenu";
+import { useUserStore } from "@/store/userStore";
 
 const Navbar = () => {
+  const {logout, user} = useUserStore();
   const navigate = useNavigate();
   
-  const [token, setToken] = useState<boolean>(true)
   const [showMenu, setShowMenu] = useState<boolean>(false)
   
   return (
@@ -37,21 +38,24 @@ const Navbar = () => {
       {/* profile section */}
       <div className="flex items-center gap-4">
         { 
-          token ?  (
+          user ?  (
             <div className="flex items-center gap-2 cursor-pointer group relative">
-              <img src={assets.profile_pic} alt="profile" className="w-8 rounded-full"/>
+              <img src={user?.image} alt="image" className="w-8 rounded-full border"/>
               <img src={assets.dropdown_icon} alt="profile" className="w-2.5"/>
 
               <div className="absolute top-0 right-0 z-20 pt-14 text-base font-medium text-gray-600 hidden group-hover:block">
                 <div className="min-w-48 bg-stone-100 rounded flex flex-col items-start gap-4 p-4 ">
                   <p onClick={() => navigate("my-profile")} className="cursor-pointer">My Profile</p>
                   <p onClick={() => navigate("my-appointments")} className="cursor-pointer">My Appointments</p>
-                  <p onClick={() => setToken(false)} className="cursor-pointer">logout</p>
+                  <p onClick={() => {
+                    logout()
+                    navigate("/")
+                  }} className="cursor-pointer">logout</p>
                 </div>
               </div>
             </div>
           )
-          : <button onClick={() => navigate("/login")} className="bg-primary_base text-white px-8 py-3 rounded-xl font-light hidden md:block">create account</button>
+          : <button onClick={() => navigate("/login")} className="bg-primary_base text-white px-8 py-3 rounded-xl font-light hidden md:block">Login</button>
         }
         {/* Mobile Menu */}
         <div className="md:hidden" onClick={() => setShowMenu(!showMenu)}>

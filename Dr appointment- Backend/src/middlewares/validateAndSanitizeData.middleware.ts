@@ -6,7 +6,7 @@ function validateAndSanitizeData (schema: AnyZodObject) {
     
   return function (req: Request, res: Response, next: NextFunction) {
     try {
-   
+        
       if(req.body) {
         if(req.body.address) req.body.address = JSON.parse(req.body.address);
         if(req.body.fees) req.body.fees = Number(req.body.fees);
