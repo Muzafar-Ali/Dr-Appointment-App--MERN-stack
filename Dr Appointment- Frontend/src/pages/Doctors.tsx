@@ -8,12 +8,12 @@ const Doctors = () => {
   const { speciality } = useParams();
   const { doctors } = useDoctorStore();
 
-  const [filterDoctors, setFilterDoctors] = useState<TDoctor[]>([])
+  const [filterDoctors, setFilterDoctors] = useState<TDoctor[] | undefined>([])
   const [showFilters, setShowFilters] = useState<boolean>(false)
 
   const applyFilter = () => {
     if (speciality) {
-      const filteredDoctors = doctors.filter((doctor) => doctor.speciality === speciality);
+      const filteredDoctors = doctors?.filter((doctor) => doctor.speciality === speciality);
       setFilterDoctors(filteredDoctors);
     } else {
       setFilterDoctors(doctors)
@@ -76,7 +76,7 @@ const Doctors = () => {
 
         {/* right side - Doctors */}
         <div className="w-full grid grid-cols-auto gap-4 gap-y-6">
-          { filterDoctors.map((item) => (
+          { filterDoctors?.map((item) => (
             <div 
               key={item._id} 
               className="border border-blue-200 rounded-xl overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500"

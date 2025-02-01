@@ -1,4 +1,3 @@
-import { assets } from "@/assets/assets"
 import { useUserStore } from "@/store/userStore"
 import { TUser } from "@/types/userType";
 import { useEffect, useState } from "react"

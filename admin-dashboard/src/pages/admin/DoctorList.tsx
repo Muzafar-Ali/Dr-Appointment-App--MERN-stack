@@ -4,7 +4,7 @@ import { TDoctor } from "../../types/adminType";
 
 const DoctorList = () => {
   
-  const {getAllDoctors, loading, user, doctors, updateDoctorAvailability} = useAdminStore();
+  const {getAllDoctors, loading, doctors, updateDoctorAvailability} = useAdminStore();
   
   const [refresh, setRefresh] = useState(false);
   

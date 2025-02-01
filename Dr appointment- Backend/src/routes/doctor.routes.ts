@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { listOfDoctors } from "../controllers/doctor.controllers.js";
+import { getAllDoctorsHandler, getDoctorHandler } from "../controllers/doctor.controllers.js";
 
 const route = Router();
 
-route.get("/list", listOfDoctors);
+route.get("/list", getAllDoctorsHandler);
+route.get("/:id", getDoctorHandler);
 
 export default route;

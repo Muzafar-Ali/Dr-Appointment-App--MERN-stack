@@ -13,9 +13,22 @@ import doctorRoutes from "./routes/doctor.routes.js"
 const app = express();
 const port = config.port
 
+// app.use(cors({
+//   origin: `${config.corsOrigin}`,
+//   credentials: true
+// }));
+
+// Enable CORS with dynamic origin check
 app.use(cors({
-  origin: `${config.corsOrigin}`,
-  credentials: true
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or Postman)
+    if (!origin || config.corsOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true  // Allow cookies/session data
 }));
 
 // Middlewares

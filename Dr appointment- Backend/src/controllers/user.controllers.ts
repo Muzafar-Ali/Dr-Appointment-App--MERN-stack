@@ -4,6 +4,9 @@ import UserModel from "../models/user.model.js";
 import ErrorHandler from "../utils/errorClass.js";
 import { TUserLoginZod, TUserProfileUpdateZod, TUserRegisterZod } from "../schema/user.schema.js";
 import { createUser, updateUserProfile } from "../services/user.service.js";
+import { AppointmentModel } from "../models/appoinments.js";
+import DoctorModel from "../models/doctor.model.js";
+import { date } from "zod";
 
 export const registerUserHandler = (async (req: Request<{}, {}, TUserRegisterZod["body"]>, res: Response, next: NextFunction) => {
   try {
@@ -104,6 +107,58 @@ export const updateUserProfileHandler = async (req: Request<{}, {}, TUserProfile
     })
   } catch (error) {
     console.error('updateUserProfile error: ', error);
+    next(error);
+  }
+}
+
+export const bookAppointmentHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { doctorId, slotDate, slotTime, amount } = req.body;
+    const userId = req.user.id;
+
+    console.log('req.body', req.body);
+    console.log('userId', userId);
+    
+    const doctor = await DoctorModel.findById(doctorId);
+
+    if(!doctor.available) throw new ErrorHandler(400, "Doctor is not available");
+    // if(!doctor.slots.includes(slotTime)) throw new ErrorHandler(400, "Slot is not available");
+
+    let slotsBooked = doctor.slotsBooked;
+    
+    // checking for slot availability
+    if(slotsBooked[slotDate]) {
+      if(slotsBooked[slotDate].includes(slotTime)) throw new ErrorHandler(409, "Slot not available");
+      slotsBooked[slotDate].push(slotTime);
+    } else {
+      slotsBooked[slotDate] = [];
+      slotsBooked[slotDate] = [slotTime];
+    }
+
+    const appointment = new AppointmentModel({
+      doctorId,
+      userId,
+      slotDate,
+      slotTime,
+      amount,
+      date: Date.now();
+    });
+    
+    await appointment.save();
+    // // save appointment in user's model
+    // await UserModel.findByIdAndUpdate(userId, { $push: { appointments: appointment._id } });
+    
+    // save updated slot in doctor's model
+    await DoctorModel.findByIdAndUpdate(doctorId, { slotsBooked: slotsBooked });
+    
+    res.status(200).json({
+      success: true,
+      message: "Appointment booked successfully",
+      appointment,
+    })
+
+  } catch (error) {
+    console.error('bookAppointment error: ', error);
     next(error);
   }
 }

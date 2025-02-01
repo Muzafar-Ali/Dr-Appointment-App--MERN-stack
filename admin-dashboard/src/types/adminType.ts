@@ -19,12 +19,12 @@ export type TDoctor = {
 
 
 export type TAdminState = {
-  user: TDoctor | null;
+  admin: TDoctor | null;
   doctors: TDoctor[];
   loading: boolean;
   login: (userInput: {email: string, password: string}) => void;
   logout: () => void;
   addDoctor: (formDta: FormData) => void;
-  getAllDoctors: () => void;
-  updateDoctorAvailability: (doctorId: string, isAvailable: boolean) => void;
+  getAllDoctors: () => Promise<void>;
+  updateDoctorAvailability: (doctorId: string, isAvailable: boolean) => Promise<void>;
 }

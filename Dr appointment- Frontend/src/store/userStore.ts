@@ -1,5 +1,5 @@
 import config from "@/config/config";
-import { TLoginUser, TUseUserStore } from "@/types/userType";
+import { TAppointment, TLoginUser, TUseUserStore } from "@/types/userType";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { create } from "zustand";
@@ -134,6 +134,29 @@ export const useUserStore = create<TUseUserStore>() (persist((set) => ({
         headers: {
           "Content-Type": "multipart/form-data",
         },
+        withCredentials: true
+      });
+
+      if(response.data.success){
+        set({ loading: false });
+        toast.success(response.data.message);
+      }
+
+    } catch (error: any) {
+      set({ loading: false })
+
+      if(error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+    }
+  },
+  bookAppointment: async (appointmentData: TAppointment) => {
+    set({ loading: true });
+
+    try {
+      const response = await axios.post(`${config.baseUri}/api/v1/user/appointment`, appointmentData, {
         withCredentials: true
       });
 

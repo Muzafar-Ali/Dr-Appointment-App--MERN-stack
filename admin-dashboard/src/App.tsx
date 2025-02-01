@@ -11,9 +11,9 @@ import { ToastContainer } from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
-  const {user} = useAdminStore();
+  const {admin} = useAdminStore();
   
-  return user ? (
+  return admin ? (
     <div className="bg-[#F8F9FD]">
       <ToastContainer/>
       <Navbar/>

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
-  user:  null,
+  admin:  null,
   doctors: [],
   loading: false,
   login: async (userInput: {email: string, password: string}) => {
@@ -19,7 +19,7 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
       })
            
       if (response.data.success) {
-        set({ user: response.data.user })
+        set({ admin: response.data.admin})
         set({ loading: false })
       }
       
@@ -41,7 +41,7 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
           
       if (response.data.success) {
         localStorage.removeItem("admin");
-        set({ user: null })
+        set({ admin: null })
         set({ loading: false })
       }
     } catch (error: any) {

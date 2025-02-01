@@ -17,12 +17,12 @@ function App() {
   return (
     // <div className='mx-4 sm:mx[10%]'>
     <div className=''>
-      <ToastContainer />
+      <ToastContainer position='top-center'/>
       <NavbarDesktop />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/about' element={<About />} />
-        <Route path='/appointment/:drId' element={<Appointment />} />
+        <Route path='/appointment/:doctorId' element={<Appointment />} />
         <Route path='/contact' element={<Contact />} />
         <Route path='/doctors' element={<Doctors />} />
         <Route path='/doctors/:speciality' element={<Doctors />} />

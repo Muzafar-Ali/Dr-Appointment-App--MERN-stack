@@ -2,9 +2,11 @@ import { assets } from "@/assets/assets";
 import RelatedDoctors from "@/components/RelatedDoctors";
 import config from "@/config/config";
 import { useDoctorStore } from "@/store/doctorStore";
+import { useUserStore } from "@/store/userStore";
 import { TDoctor } from "@/types/doctorType";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
+import { toast } from "react-toastify";
 
 type  TDocTimeSlot = {
   dateTime: Date; 
@@ -12,8 +14,9 @@ type  TDocTimeSlot = {
 }[]
 
 const Appointment = () => {
-  const  {drId} = useParams();
-  const {doctors} = useDoctorStore();
+  const  {doctorId} = useParams();
+  const {doctors, getDoctor, getAllDoctors} = useDoctorStore();
+  const {user, bookAppointment} = useUserStore();
 
   const [doctorInfo, setDoctorInfo] = useState<TDoctor>();
   const [docSlots, setDocSlots] = useState<TDocTimeSlot[]>([]);
@@ -47,12 +50,25 @@ const Appointment = () => {
       let timeSlots = [];
       while (currentDate < endTime) {
         let formatedTime = currentDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
-        // Add time slot to the day's array
-        timeSlots.push({
-          dateTime: new Date(currentDate),
-          time: formatedTime,
-        });
+        
+        // logic to remove booket time slots starts
+        let day = currentDate.getDate();
+        let month = currentDate.getMonth() + 1;
+        let year = currentDate.getFullYear();
+        let slotDate = `${day}-${month}-${year}`;
+        let slotTime = formatedTime;
+        
+        // Check if the slot is available
+        let isSlotAvailable = doctorInfo?.slotsBooked[slotDate] && doctorInfo?.slotsBooked[slotDate].includes(slotTime) ? false : true
+        // logic to remove booket time slots ends
+        
+        if(isSlotAvailable) {
+          // Add time slot to the day's array
+          timeSlots.push({
+            dateTime: new Date(currentDate),
+            time: formatedTime,
+          });
+        }
   
         // Increment by 30 minutes
         currentDate.setMinutes(currentDate.getMinutes() + 30);
@@ -67,21 +83,50 @@ const Appointment = () => {
   };
   
 
-  const fetchDocTorInfo = () => {
-    const docInfo = doctors.find((doc) => doc._id === drId);
-    setDoctorInfo(docInfo);
+  const bookAppointmentHandler = async () => {
+    if(!user) {
+      toast.warn('Please login to book an appointment');
+    }
+
+    try {
+      if(!doctorInfo) return
+
+      const date = docSlots[slotIndex][0].dateTime
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
+
+      const slotDate = `${day}-${month}-${year}`;
+      
+      const appointmentData = {
+        doctorId: doctorInfo?._id,
+        slotDate,
+        slotTime,
+        amount: doctorInfo?.fees
+      }
+       await bookAppointment(appointmentData)
+
+    } catch (error) {
+      
+    }
   }
 
+
   useEffect(() => {
+    const fetchDocTorInfo = async () => {
+      const docInfo = await getDoctor(doctorId as string)
+      setDoctorInfo(docInfo);
+    }
     fetchDocTorInfo();
-  }, [doctors, drId])
+    getAllDoctors();  // fetch all doctor for related doctor logic
+  }, [doctorId])
 
   useEffect(() => {
     getAvailableSlot();
   }, [doctorInfo])
 
   useEffect(() => {
-    console.log('docSlots', docSlots);
+    // console.log('docSlots', docSlots);
     
   },[docSlots])
   
@@ -140,9 +185,9 @@ const Appointment = () => {
             ))
           }
         </div>
-        <button className="bg-primary_base text-white text-sm font-light px-14 py-3 rounded-full my-6">Book an Appointment</button>
+        <button onClick={bookAppointmentHandler} className="bg-primary_base text-white text-sm font-light px-14 py-3 rounded-full my-6">Book an Appointment</button>
       </div>
-      <RelatedDoctors drId={drId!} speciality = {doctorInfo?.speciality!}/>
+      <RelatedDoctors doctorId={doctorId!} speciality = {doctorInfo?.speciality!}/>
     </div>
   )
 }

@@ -27,6 +27,13 @@ export type TUser = {
   role: "admin" | "doctor" | "user";
 }
 
+export type TAppointment = {
+  doctorId: string;
+  slotDate: string;
+  slotTime: string;
+  amount: number;
+}
+
 export type TUseUserStore = {
   user: TUser | null;
   loading: boolean;
@@ -35,4 +42,5 @@ export type TUseUserStore = {
   logout: () => void;
   getUserProfile: () => Promise<TUser>;
   updateUserProfile: (user: FormData) => void;
+  bookAppointment: (appointmentData: TAppointment) => Promise<void>;
 }

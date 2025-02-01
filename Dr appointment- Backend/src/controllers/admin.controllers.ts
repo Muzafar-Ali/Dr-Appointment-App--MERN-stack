@@ -3,7 +3,6 @@ import { TAdminLoginZod, TDoctorZod } from "../schema/admin.schema.js";
 import { createDoctor } from "../services/admin.service.js";
 import ErrorHandler from "../utils/errorClass.js";
 import DoctorModel from "../models/doctor.model.js";
-import omit from "lodash/omit.js";
 import generateJwtTokenAndSetCookie from "../utils/generateJwtTokenAndSetCookie.js";
 
 export const addDoctorHandler = async( req: Request<{}, {}, TDoctorZod["body"]>, res: Response, next: NextFunction) => {
@@ -25,44 +24,6 @@ export const addDoctorHandler = async( req: Request<{}, {}, TDoctorZod["body"]>,
   }
 }
 
-
-export const loginAdminHandler = async(req: Request<{}, {}, TAdminLoginZod["body"]>, res: Response, next: NextFunction) => {
-  try {
-    const { email, password } = req.body;
-    
-    const doctor = await DoctorModel.findOne({ email });
-    if(!doctor) throw new ErrorHandler(401, "Invalid credentials");
-
-    const isMatch = await doctor.comparePassword(password);
-    if(!isMatch) throw new ErrorHandler(401, "Invalid credentials");
-
-    generateJwtTokenAndSetCookie( res, doctor._id, doctor.role);
-
-    res.status(200).json({
-      success: true,
-      message: "Admin logged in successfully",
-      user: omit(doctor.toJSON(),"password") 
-    })
-    
-  } catch (error) {
-    console.error('loginAdminHandler error: ', error);
-    next(error);
-  }
-}
-
-export const logoutAdminHandler = async(req: Request, res: Response, next: NextFunction) => {
-  try {
-    res.clearCookie("token");
-    res.status(200).json({
-      success: true,
-      message: "Admin logged out successfully"
-    })
-  } catch (error) {
-    console.error('logoutAdminHandler error: ', error);
-    next(error);
-  }
-}
-
 export const getAllDoctorsHAndler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const doctors = await DoctorModel.find({}).select("-password");
@@ -78,14 +39,12 @@ export const getAllDoctorsHAndler = async (req: Request, res: Response, next: Ne
   }
 }
 
-
 export const adminLoginHandler = async (req: Request<{}, {}, TAdminLoginZod["body"]>, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
 
     const user = await DoctorModel.findOne({ email });    
     if(!user) throw new ErrorHandler( 404, "Invalid credentials");
-
     
     const isMatch = await user.comparePassword(password);
     if(!isMatch) throw new ErrorHandler(404, "Invalid credentials");
@@ -95,7 +54,7 @@ export const adminLoginHandler = async (req: Request<{}, {}, TAdminLoginZod["bod
     res.status(200).json({
       success: true,
       message: "User logged in successfully",
-      user: {
+      admin: {
         name: user.name,
         email: user.email,
         role: user.role,
@@ -104,6 +63,19 @@ export const adminLoginHandler = async (req: Request<{}, {}, TAdminLoginZod["bod
     })
   } catch (error) {
     console.error('userLogin error: ', error);
+    next(error);
+  }
+}
+
+export const adminLogoutHandler = async(req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.clearCookie("atoken");
+    res.status(200).json({
+      success: true,
+      message: "Admin logged out successfully"
+    })
+  } catch (error) {
+    console.error('logoutAdminHandler error: ', error);
     next(error);
   }
 }

@@ -11,9 +11,14 @@ export type TDoctor = {
     line1: string;
     line2: string;
   };
+  slotsBooked: {
+    [key: string]: string[];
+  }
 }
 
 export type TUseDoctorStore = {
-  doctors: TDoctor[];
-  setDoctors: (doctors: TDoctor[]) => void;
+  doctors: TDoctor[] | undefined;
+  loading: boolean;
+  getAllDoctors: () => void;
+  getDoctor: (id: string) => Promise<TDoctor | undefined>;
 }

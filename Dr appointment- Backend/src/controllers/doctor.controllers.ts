@@ -25,7 +25,7 @@ export const updateAvailability = async ( req: Request, res: Response, next: Nex
   }
 }
 
-export const listOfDoctors = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllDoctorsHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const doctors = await DoctorModel.find({}).select("-password");
 
@@ -39,3 +39,22 @@ export const listOfDoctors = async (req: Request, res: Response, next: NextFunct
     next(error);
   }
 } 
+
+export const getDoctorHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    console.log('req.params.id', req.params.id);
+    
+    const doctor = await DoctorModel.findById(req.params.id).select("-password");
+
+    if(!doctor) throw new ErrorHandler(404, "Doctor not found");
+
+    res.status(200).json({
+      success: true,
+      message: "Doctor fetched successfully",
+      doctor
+    })
+  } catch (error) {
+    console.error('getDoctor error: ', error);
+    next(error);
+  }
+}
