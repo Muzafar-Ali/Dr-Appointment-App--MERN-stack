@@ -7,6 +7,7 @@ import { createUser, updateUserProfile } from "../services/user.service.js";
 import { AppointmentModel } from "../models/appoinments.model.js";
 import DoctorModel from "../models/doctor.model.js";
 import { date } from "zod";
+import mongoose from "mongoose";
 
 // user registration
 export const registerUserHandler = (async (req: Request<{}, {}, TUserRegisterZod["body"]>, res: Response, next: NextFunction) => {
@@ -189,43 +190,44 @@ export const getMyAppointmentsHandler = async (req: Request, res: Response, next
 
 // cancel appointment
 export const cancelAppointmentHandler = async (req: Request, res: Response, next: NextFunction) => {
+  // add session to roll back entire process if something goes wrong
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  
   try {
     const { appointmentId } = req.body;
-    console.log('appointment', appointmentId);
-    
-    const appointment = await AppointmentModel.findById(appointmentId);
+
+    const appointment = await AppointmentModel.findById(appointmentId).session(session);
 
     if(!appointment) throw new ErrorHandler(404, "Appointment not found");
 
     if(appointment.status === 'cancelled') throw new ErrorHandler(400, "Appointment already cancelled");
 
-    appointment.status = 'cancelled';
-    await appointment.save();
-
-    // release doctor slot 
-    const doctor = await DoctorModel.findById(appointment.doctorId);
+    // release doctor slot
+    const doctor = await DoctorModel.findById(appointment.doctorId).session(session);
     let slotsBooked = doctor.slotsBooked;
 
     slotsBooked[appointment.slotDate] = slotsBooked[appointment.slotDate].filter((item: any) => item !== appointment.slotTime);
     
-    await DoctorModel.findByIdAndUpdate(appointment.doctorId, { slotsBooked: slotsBooked });
+    const slotReleased = await DoctorModel.findByIdAndUpdate(appointment.doctorId, { slotsBooked: slotsBooked }, {new: true, session});
+    if(!slotReleased) throw new ErrorHandler(404, "Slot not released");
 
-    // const slotDate = appointment.slotDate;
-    // const slotTime = appointment.slotTime;
-    
-    // if(slotsBooked[slotDate]) {
-    //   const index = slotsBooked[slotDate].indexOf(slotTime);
-    //   if(index > -1) {
-    //     slotsBooked[slotDate].splice(index, 1);
-    //   }
-    // }
+    // save appointment status
+    appointment.status = 'cancelled';
+    await appointment.save({ session });
+
+    // Commit the transaction
+    await session.commitTransaction();
+    session.endSession();
 
     res.status(200).json({
       success: true,
       message: "Appointment cancelled",
-    })
+    });
   } catch (error) {
-    console.error('cancelAppointment error: ', error);
+    await session.abortTransaction();
+    session.endSession();
+    console.error('cancelAppointmentAdmin error: ', error);
     next(error);
   }
 }

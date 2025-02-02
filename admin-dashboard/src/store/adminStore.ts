@@ -8,6 +8,7 @@ import { createJSONStorage, persist } from "zustand/middleware";
 export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
   admin:  null,
   doctors: [],
+  appointments: [],
   loading: false,
   login: async (userInput: {email: string, password: string}) => {
 
@@ -130,6 +131,52 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
       }
     }
   },
+  getAllAppointments: async () => {
+    set({ loading: true })
+
+    try {
+      const response = await axios.get(`${config.baseUri}/api/v1/admin/appointments`, {
+        withCredentials: true,
+      })
+
+      if (response.data.success) {
+        set({appointments: response.data.appointments, loading: false })
+      }
+
+    } catch (error: any) {
+      set({ loading: false })
+
+      if(error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+    }
+  },
+  cancelAppointment: async (appointmentId: string) => {
+    set({ loading: true })
+
+    try {
+      const response = await axios.post(`${config.baseUri}/api/v1/admin/appointments/cancel`, {appointmentId}, {
+        withCredentials: true,
+      })
+
+      if (response.data.success) {
+        set({ loading: false })
+        await get().getAllAppointments()
+        toast.success(response.data.message)
+      }
+
+    } catch (error: any) {
+      set({ loading: false })
+
+      if(error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+    }
+  }
 }), 
 {
   name: "admin",

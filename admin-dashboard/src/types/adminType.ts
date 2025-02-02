@@ -17,14 +17,46 @@ export type TDoctor = {
   role: "admin" | "doctor" | "user";
 }
 
+type TUserId = {
+  _id: string;
+  name: string;
+  email: string;
+  image: string;
+  dob: string;
+}
+
+type TDoctorId = {
+  _id: string;
+  name: string;
+  email: string;
+  image: string;
+  fees: number;
+}
+
+export type TAppointments = {
+  _id: string;
+  userId: TUserId;
+  doctorId: TDoctorId;
+  slotDate: string;
+  slotTime: string;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  payment: string;
+  amount: number;
+  date: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export type TAdminState = {
   admin: TDoctor | null;
   doctors: TDoctor[];
+  appointments: TAppointments[];
   loading: boolean;
   login: (userInput: {email: string, password: string}) => void;
   logout: () => void;
   addDoctor: (formDta: FormData) => void;
   getAllDoctors: () => Promise<void>;
   updateDoctorAvailability: (doctorId: string, isAvailable: boolean) => Promise<void>;
+  getAllAppointments: () => Promise<void>;
+  cancelAppointment: (appointmentId: string) => Promise<void>;
 }

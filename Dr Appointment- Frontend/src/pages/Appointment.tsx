@@ -23,8 +23,7 @@ const Appointment = () => {
   const [docSlots, setDocSlots] = useState<TDocTimeSlot[]>([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState('')
-  const [refresh, setRefresh] = useState(false)
-
+  
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
   const getAvailableSlot = () => {
