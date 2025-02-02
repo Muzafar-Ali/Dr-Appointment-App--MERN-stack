@@ -58,9 +58,9 @@ const Doctors = () => {
           <p 
             className={`w-[80vw] sm:w-[100%] pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer
               ${speciality === "Pediatricians" ? "bg-indigo-100 text-black" : ""}`}
-            onClick={() => speciality === 'Pediatricians' ? navigate('/doctors') : navigate('/doctors/Pediatricians')}
+            onClick={() => speciality === 'Pediatrician' ? navigate('/doctors') : navigate('/doctors/Pediatrician')}
 
-          >Pediatricians</p>
+          >Pediatrician</p>
           <p 
             className={`w-[80vw] sm:w-[100%] pl-3 py-1.5 pr-16 border border-gray-300 rounded transition-all cursor-pointer
               ${speciality === "Neurologist" ? "bg-indigo-100 text-black" : ""}`}

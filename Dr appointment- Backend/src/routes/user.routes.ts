@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { bookAppointmentHandler, getUserProfileHandler, registerUserHandler, updateUserProfileHandler, userLoginHandler, userLogoutHandler } from "../controllers/user.controllers.js";
+import { bookAppointmentHandler, cancelAppointmentHandler, getMyAppointmentsHandler, getUserProfileHandler, registerUserHandler, updateUserProfileHandler, userLoginHandler, userLogoutHandler } from "../controllers/user.controllers.js";
 import { adminLoginSchema } from "../schema/admin.schema.js";
 import validateAndSanitizeData from "../middlewares/validateAndSanitizeData.middleware.js";
 import { registerUserSchema, updateUserPrifleSchema } from "../schema/user.schema.js";
@@ -14,5 +14,7 @@ route.post("/logout", userLogoutHandler)
 route.get("/profile", isAuthenticated, getUserProfileHandler)
 route.patch("/profile", isAuthenticated, upload.single('image'), validateAndSanitizeData(updateUserPrifleSchema), updateUserProfileHandler)
 route.post("/appointment", isAuthenticated, bookAppointmentHandler)
+route.get("/appointment", isAuthenticated, getMyAppointmentsHandler)
+route.post("/appointment/cancel", isAuthenticated, cancelAppointmentHandler)
 
 export default route;

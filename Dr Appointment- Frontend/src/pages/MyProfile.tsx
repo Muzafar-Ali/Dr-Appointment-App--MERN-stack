@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 
 const MyProfile = () => {
 
-  const {user, getUserProfile, updateUserProfile} = useUserStore();
+  const {getUserProfile, updateUserProfile} = useUserStore();
 
   const defaultUserData: TUser = {
     name: '',
@@ -16,6 +16,7 @@ const MyProfile = () => {
       line2: '',
     },
     gender: '',
+    speciality: '',
     dob: '',
     image: '',
     role: 'user',

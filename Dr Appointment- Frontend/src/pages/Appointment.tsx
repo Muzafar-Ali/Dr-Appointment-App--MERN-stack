@@ -5,7 +5,7 @@ import { useDoctorStore } from "@/store/doctorStore";
 import { useUserStore } from "@/store/userStore";
 import { TDoctor } from "@/types/doctorType";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "react-toastify";
 
 type  TDocTimeSlot = {
@@ -15,13 +15,15 @@ type  TDocTimeSlot = {
 
 const Appointment = () => {
   const  {doctorId} = useParams();
-  const {doctors, getDoctor, getAllDoctors} = useDoctorStore();
+  const navigate = useNavigate();
+  const {getDoctor, getAllDoctors} = useDoctorStore();
   const {user, bookAppointment} = useUserStore();
 
   const [doctorInfo, setDoctorInfo] = useState<TDoctor>();
   const [docSlots, setDocSlots] = useState<TDocTimeSlot[]>([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState('')
+  const [refresh, setRefresh] = useState(false)
 
   const daysOfWeek = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
@@ -111,7 +113,6 @@ const Appointment = () => {
     }
   }
 
-
   useEffect(() => {
     const fetchDocTorInfo = async () => {
       const docInfo = await getDoctor(doctorId as string)
@@ -185,7 +186,13 @@ const Appointment = () => {
             ))
           }
         </div>
-        <button onClick={bookAppointmentHandler} className="bg-primary_base text-white text-sm font-light px-14 py-3 rounded-full my-6">Book an Appointment</button>
+        <button 
+          onClick={() => {
+            bookAppointmentHandler(),
+            navigate("/my-appointments")
+
+          }}
+          className="bg-primary_base text-white text-sm font-light px-14 py-3 rounded-full my-6">Book an Appointment</button>
       </div>
       <RelatedDoctors doctorId={doctorId!} speciality = {doctorInfo?.speciality!}/>
     </div>

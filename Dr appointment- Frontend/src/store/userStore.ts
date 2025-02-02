@@ -174,6 +174,56 @@ export const useUserStore = create<TUseUserStore>() (persist((set) => ({
         toast.error(error.message)
       }
     }
+  },
+  getMyAppointment: async () => {
+    set({ loading: true });
+
+    try {
+      const response = await axios.get(`${config.baseUri}/api/v1/user/appointment`, {
+        withCredentials: true
+      });
+
+      if(response.data.success){
+        set({ loading: false });
+        return response.data.appointments
+      }
+
+    } catch (error: any) {
+      set({ loading: false })
+
+      if(error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+    }
+  },
+  cancelAppointment: async (appointmentId: string) => {
+    set({ loading: true });
+    console.log('appointmentId', appointmentId);
+    
+    try {
+      const response = await axios.post(`${config.baseUri}/api/v1/user/appointment/cancel`, {appointmentId}, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true
+      });
+
+      if(response.data.success){
+        set({ loading: false });
+        toast.success(response.data.message);
+      }
+
+    } catch (error: any) {
+      set({ loading: false })
+
+      if(error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+    }
   }
 }), 
 {

@@ -21,6 +21,7 @@ export type TUser = {
     line1: string;
     line2: string;
   }
+  speciality: string;
   gender: string;
   dob: string;
   image: string;
@@ -34,6 +35,20 @@ export type TAppointment = {
   amount: number;
 }
 
+export type TMyAppointments = {
+  _id: string;
+  doctorId: TUser;
+  userId: TUser;
+  slotDate: string;
+  slotTime: string;
+  amount: number;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  payment: 'unpaid' | 'paid';
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 export type TUseUserStore = {
   user: TUser | null;
   loading: boolean;
@@ -43,4 +58,6 @@ export type TUseUserStore = {
   getUserProfile: () => Promise<TUser>;
   updateUserProfile: (user: FormData) => void;
   bookAppointment: (appointmentData: TAppointment) => Promise<void>;
+  getMyAppointment: () => Promise<TMyAppointments[]>
+  cancelAppointment: (appointmentId: string) => Promise<void>;
 }

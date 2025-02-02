@@ -4,10 +4,11 @@ import UserModel from "../models/user.model.js";
 import ErrorHandler from "../utils/errorClass.js";
 import { TUserLoginZod, TUserProfileUpdateZod, TUserRegisterZod } from "../schema/user.schema.js";
 import { createUser, updateUserProfile } from "../services/user.service.js";
-import { AppointmentModel } from "../models/appoinments.js";
+import { AppointmentModel } from "../models/appoinments.model.js";
 import DoctorModel from "../models/doctor.model.js";
 import { date } from "zod";
 
+// user registration
 export const registerUserHandler = (async (req: Request<{}, {}, TUserRegisterZod["body"]>, res: Response, next: NextFunction) => {
   try {
     const userData = req.body;
@@ -25,6 +26,7 @@ export const registerUserHandler = (async (req: Request<{}, {}, TUserRegisterZod
   }
 })
 
+// user login
 export const userLoginHandler = async (req: Request<{}, {}, TUserLoginZod["body"]>, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
@@ -51,6 +53,7 @@ export const userLoginHandler = async (req: Request<{}, {}, TUserLoginZod["body"
   }
 }
 
+// user logout
 export const userLogoutHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     res.clearCookie("utoken", { path: '/' });
@@ -65,6 +68,7 @@ export const userLogoutHandler = async (req: Request, res: Response, next: NextF
   }
 }
 
+// get user profile
 export const getUserProfileHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await UserModel.findById(req.user.id).select("-password");
@@ -90,6 +94,7 @@ export const getUserProfileHandler = async (req: Request, res: Response, next: N
   }
 }
 
+// update user profile
 export const updateUserProfileHandler = async (req: Request<{}, {}, TUserProfileUpdateZod["body"] >, res: Response, next: NextFunction) => {
   try {
     const userData = req.body
@@ -111,6 +116,9 @@ export const updateUserProfileHandler = async (req: Request<{}, {}, TUserProfile
   }
 }
 
+/****** appointment handlers ******/
+
+// book an appointment
 export const bookAppointmentHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { doctorId, slotDate, slotTime, amount } = req.body;
@@ -141,13 +149,11 @@ export const bookAppointmentHandler = async (req: Request, res: Response, next: 
       slotDate,
       slotTime,
       amount,
-      date: Date.now();
+      date: Date.now()
     });
     
     await appointment.save();
-    // // save appointment in user's model
-    // await UserModel.findByIdAndUpdate(userId, { $push: { appointments: appointment._id } });
-    
+
     // save updated slot in doctor's model
     await DoctorModel.findByIdAndUpdate(doctorId, { slotsBooked: slotsBooked });
     
@@ -159,6 +165,67 @@ export const bookAppointmentHandler = async (req: Request, res: Response, next: 
 
   } catch (error) {
     console.error('bookAppointment error: ', error);
+    next(error);
+  }
+}
+
+// get user appointments
+export const getMyAppointmentsHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const userId = req.user.id;
+
+    const appointments = await AppointmentModel.find({ userId }).populate('doctorId', 'name image specialization address speciality');
+
+    res.status(200).json({
+      success: true,
+      message: "Appointments fetched successfully",
+      appointments,
+    })
+  } catch (error) {
+    console.error('getMyAppointments error: ', error);
+    next(error);
+  }
+}
+
+// cancel appointment
+export const cancelAppointmentHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { appointmentId } = req.body;
+    console.log('appointment', appointmentId);
+    
+    const appointment = await AppointmentModel.findById(appointmentId);
+
+    if(!appointment) throw new ErrorHandler(404, "Appointment not found");
+
+    if(appointment.status === 'cancelled') throw new ErrorHandler(400, "Appointment already cancelled");
+
+    appointment.status = 'cancelled';
+    await appointment.save();
+
+    // release doctor slot 
+    const doctor = await DoctorModel.findById(appointment.doctorId);
+    let slotsBooked = doctor.slotsBooked;
+
+    slotsBooked[appointment.slotDate] = slotsBooked[appointment.slotDate].filter((item: any) => item !== appointment.slotTime);
+    
+    await DoctorModel.findByIdAndUpdate(appointment.doctorId, { slotsBooked: slotsBooked });
+
+    // const slotDate = appointment.slotDate;
+    // const slotTime = appointment.slotTime;
+    
+    // if(slotsBooked[slotDate]) {
+    //   const index = slotsBooked[slotDate].indexOf(slotTime);
+    //   if(index > -1) {
+    //     slotsBooked[slotDate].splice(index, 1);
+    //   }
+    // }
+
+    res.status(200).json({
+      success: true,
+      message: "Appointment cancelled",
+    })
+  } catch (error) {
+    console.error('cancelAppointment error: ', error);
     next(error);
   }
 }

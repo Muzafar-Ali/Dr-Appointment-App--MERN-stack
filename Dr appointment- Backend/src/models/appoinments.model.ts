@@ -32,15 +32,11 @@ const appoinmentSchema = new mongoose.Schema({
     enum: ['paid', 'unpaid'],
     default: 'unpaid'
   },
-  // status: {
-  //   type: String,
-  //   enum: ['scheduled', 'completed', 'cancelled'],
-  //   default: 'scheduled'
-  // }
-  isCompleted: {
-    type: Boolean,
-    default: false
-  }
+  status: {
+    type: String,
+    enum: ['scheduled', 'completed', 'cancelled'],
+    default: 'scheduled'
+  },
 }, 
 {
   timestamps: true
