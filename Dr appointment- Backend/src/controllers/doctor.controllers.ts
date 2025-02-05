@@ -41,9 +41,7 @@ export const getAllDoctorsHandler = async (req: Request, res: Response, next: Ne
 } 
 
 export const getDoctorHandler = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    console.log('req.params.id', req.params.id);
-    
+  try {    
     const doctor = await DoctorModel.findById(req.params.id).select("-password");
 
     if(!doctor) throw new ErrorHandler(404, "Doctor not found");

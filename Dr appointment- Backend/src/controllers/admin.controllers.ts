@@ -140,3 +140,25 @@ export const cancelAppointmentAdminHandler = async (req: Request, res: Response,
     next(error);
   }
 }
+
+// admin dashboard for admin panel
+export const adminDashboardHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const totalAppointments = await AppointmentModel.countDocuments();
+    const totalDoctors = await DoctorModel.countDocuments();
+    const totalUsers = await DoctorModel.countDocuments();
+
+    const appointments = await AppointmentModel.find({}).populate("doctorId", "name email image fees").populate("userId", "name email dob image")
+    
+    res.status(200).json({
+      success: true,
+      totalDoctors,
+      totalUsers,
+      totalAppointments,
+      latestAppointments: appointments.reverse().slice(0, 5)
+    })
+  } catch (error) {
+    console.error('adminDashboardHandler error: ', error);
+    next(error);
+  }
+}

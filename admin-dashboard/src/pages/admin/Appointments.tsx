@@ -36,7 +36,7 @@ const Appointments = () => {
             <p>{config.currency} {item.amount}</p>
 
             <div className="flex items-center gap-2">
-              {item.status === "cancelled" && <p className="text-red-500">Cancelled</p>}
+              {item.status === "cancelled" && <p className="text-red-400">Cancelled</p>}
               {item.status === "completed" && <p className="text-green-500">Completed</p>}
               {item.status === "scheduled" &&  
                 <button onClick={() => cancelAppointment(item._id)}> <img src={assets.cancel_icon} alt="delete" /></button>

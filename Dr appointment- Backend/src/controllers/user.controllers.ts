@@ -124,9 +124,6 @@ export const bookAppointmentHandler = async (req: Request, res: Response, next: 
   try {
     const { doctorId, slotDate, slotTime, amount } = req.body;
     const userId = req.user.id;
-
-    console.log('req.body', req.body);
-    console.log('userId', userId);
     
     const doctor = await DoctorModel.findById(doctorId);
 

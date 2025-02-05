@@ -1,3 +1,5 @@
+import { late } from "zod";
+
 export type TDoctor = {
   _id: string;
   name: string;
@@ -52,6 +54,12 @@ export type TAdminState = {
   doctors: TDoctor[];
   appointments: TAppointments[];
   loading: boolean;
+  dashboardData:{ 
+    latestAppointments: TAppointments[],
+    totalAppointments: number, 
+    totalDoctors: number, 
+    totalUsers: number 
+  } | null;
   login: (userInput: {email: string, password: string}) => void;
   logout: () => void;
   addDoctor: (formDta: FormData) => void;
@@ -59,4 +67,5 @@ export type TAdminState = {
   updateDoctorAvailability: (doctorId: string, isAvailable: boolean) => Promise<void>;
   getAllAppointments: () => Promise<void>;
   cancelAppointment: (appointmentId: string) => Promise<void>;
+  adminDashboard: () => Promise<void>;
 }

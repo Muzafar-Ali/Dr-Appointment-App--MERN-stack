@@ -22,9 +22,7 @@ export const createUser = async ( userData: TUserRegisterZod["body"]) => {
 }
 
 export const updateUserProfile = async (userId: string, userData: TUserProfileUpdateZod["body"], image?: Express.Multer.File | undefined) => {
-  try {
-    console.log('image', image);
-    
+  try {   
     const user = await UserModel.findById(userId);
     if(!user) throw new ErrorHandler(404, "User not found");
 

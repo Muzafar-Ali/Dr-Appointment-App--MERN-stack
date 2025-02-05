@@ -9,6 +9,7 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
   admin:  null,
   doctors: [],
   appointments: [],
+  dashboardData: null,
   loading: false,
   login: async (userInput: {email: string, password: string}) => {
 
@@ -166,6 +167,33 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
         await get().getAllAppointments()
         toast.success(response.data.message)
       }
+
+    } catch (error: any) {
+      set({ loading: false })
+
+      if(error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+    }
+  },
+  adminDashboard: async () => {
+    set({ loading: true })
+
+    try {
+      const response = await axios.get(`${config.baseUri}/api/v1/admin/dashboard`, {
+        withCredentials: true,
+      })
+
+      set({ 
+        dashboardData: {
+          latestAppointments: response.data.latestAppointments,
+          totalAppointments: response.data.totalAppointments,
+          totalDoctors: response.data.totalDoctors,
+          totalUsers: response.data.totalUsers,
+        }
+      }); 
 
     } catch (error: any) {
       set({ loading: false })
