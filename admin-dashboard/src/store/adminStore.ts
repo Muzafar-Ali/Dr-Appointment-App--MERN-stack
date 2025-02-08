@@ -11,7 +11,7 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
   appointments: [],
   dashboardData: null,
   loading: false,
-  login: async (userInput: {email: string, password: string}) => {
+  adminLogin: async (userInput: {email: string, password: string}) => {
 
     set({ loading: true })
     
@@ -139,7 +139,7 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
       const response = await axios.get(`${config.baseUri}/api/v1/admin/appointments`, {
         withCredentials: true,
       })
-
+      
       if (response.data.success) {
         set({appointments: response.data.appointments, loading: false })
       }
@@ -158,7 +158,7 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
     set({ loading: true })
 
     try {
-      const response = await axios.post(`${config.baseUri}/api/v1/admin/appointments/cancel`, {appointmentId}, {
+      const response = await axios.patch(`${config.baseUri}/api/v1/admin/appointments/cancel`, {appointmentId}, {
         withCredentials: true,
       })
 
@@ -207,7 +207,8 @@ export const useAdminStore = create<TAdminState>() (persist((set, get) => ({
   }
 }), 
 {
-  name: "admin",
-  storage: createJSONStorage(() => localStorage),
+  name: "admin", 
+  storage: createJSONStorage(() => localStorage), // use localStorage
+  partialize: (state) => ({ admin: state.admin }), // only persist the `admin` state
 }
 ))

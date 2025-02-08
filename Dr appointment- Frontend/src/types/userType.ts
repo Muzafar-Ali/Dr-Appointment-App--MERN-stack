@@ -1,4 +1,3 @@
-import { promises } from "dns";
 
 export type TRegisterUser = {
   name: string;

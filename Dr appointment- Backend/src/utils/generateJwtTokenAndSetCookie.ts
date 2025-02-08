@@ -17,6 +17,19 @@ const generateJwtTokenAndSetCookie = (res:Response, userId: mongoose.Types.Objec
 
     return token;
   }
+  
+  if(role === "doctor") {
+    const token = jwt.sign({ id: userId, role }, config.jwtSecret!, { expiresIn: "1d" });
+
+    res.cookie("dtoken", token, {
+      httpOnly: true,
+      sameSite: 'none',
+      maxAge: config.jwtTokenAge,
+      secure: config.secure,
+    });
+
+    return token;
+  }
 
   const token = jwt.sign({ id: userId, role }, config.jwtSecret!, { expiresIn: "1d" });
    

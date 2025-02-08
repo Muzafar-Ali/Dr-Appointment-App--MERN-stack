@@ -6,7 +6,7 @@ import isAuthenticated from "../middlewares/isAuthenticated..middleware.js";
 import authorizedRoles from "../middlewares/roleAuth.middleware.js";
 import validateAndSanitizeData from "../middlewares/validateAndSanitizeData.middleware.js";
 import { updateAvailability } from "../controllers/doctor.controllers.js";
-import isAdminAuthenticated from "../middlewares/isAdminAuthenticated.js";
+import isAdminAuthenticated from "../middlewares/isAdminAuthenticated.middleware.js";
 
 const route = Router();
 
@@ -16,15 +16,7 @@ route.patch("/doctors", [isAdminAuthenticated, authorizedRoles("admin")], update
 route.post("/login", adminLoginHandler);
 route.post("/logout", adminLogoutHandler);
 route.get("/appointments", [isAdminAuthenticated, authorizedRoles("admin")], getAllAppointmentsAdminHandler)
-route.post("/appointments/cancel", [isAdminAuthenticated, authorizedRoles("admin")], cancelAppointmentAdminHandler)
+route.patch("/appointments/cancel", [isAdminAuthenticated, authorizedRoles("admin")], cancelAppointmentAdminHandler)
 route.get("/dashboard", [isAdminAuthenticated, authorizedRoles("admin")], adminDashboardHandler)
-
-route.get("/check",[isAdminAuthenticated, authorizedRoles("doctor")], (req: Request, res: Response) => {
-  res.status(200).json({
-    success: true,
-    message: "Admin is authenticated",
-    user: req.user
-  })
-})
 
 export default route;

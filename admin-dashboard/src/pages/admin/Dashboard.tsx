@@ -5,8 +5,7 @@ import { slotDtateFormat } from "../../utils/slotDateFormat";
 
 const Dashboard = () => {
   const{dashboardData, adminDashboard, cancelAppointment} = useAdminStore();
-  console.log('dashboardData', dashboardData);
-  
+    
   useEffect(() => {
     adminDashboard();
   }, [])

@@ -1,17 +1,31 @@
 import { FormEvent, useState } from "react"
 import { useAdminStore } from "../store/adminStore"
+import { useDoctorStore } from "../store/doctorStore"
+import { useNavigate } from "react-router-dom"
 
 const Login = () => {
-  const [state, setState] = useState<string | undefined>("admin")
+  const [state, setState] = useState<string | undefined>("Admin")
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   
-  const {login, loading} = useAdminStore();
+  const {adminLogin, loading} = useAdminStore();
+  const {doctorLogin} = useDoctorStore();
+  const navigate = useNavigate();
   
+
   const onSubmitHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    login({email, password})  
-  }
+  
+    if (state === "Admin") {
+      adminLogin({ email, password });
+      navigate("/admin-dashboard")
+    }
+  
+    if (state === "Doctor") {
+      doctorLogin({ email, password });  // Ensure this is defined and called
+      navigate("/doctor/dashboard")
+    }
+  };
 
   return (
     <form onSubmit={onSubmitHandler} className="min-h-[80vh] flex items-center">
@@ -33,7 +47,9 @@ const Login = () => {
         </div>
         {
           loading ? (
-            <button type="submit" className="bg-primary text-white w-full py-2 rounded-md text-base">Loading...</button>
+            <button type="submit" className="bg-primary text-white w-full py-2 rounded-md text-base">
+              Please Wait  <img width={20} height={20} alt='' className='inline-block bg-transparent' src="/spinner.svg" />
+            </button>
           ) : (
             <button type="submit" className="bg-primary text-white w-full py-2 rounded-md text-base">Login</button>
           )

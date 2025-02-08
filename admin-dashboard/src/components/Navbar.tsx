@@ -1,14 +1,22 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import logo from '../assets/logo.png'
 import { useAdminStore } from '../store/adminStore'
+import { useDoctorStore } from '../store/doctorStore';
 
 const Navbar = () => {
   const {admin, logout} = useAdminStore();
+  const {doctor, doctorLogout} = useDoctorStore();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    logout()
-    navigate('/')
+    if (admin) {
+      logout()
+      navigate('/')
+    }
+    if (doctor) {
+      doctorLogout()
+      navigate('/')
+    }
   }
 
   return (

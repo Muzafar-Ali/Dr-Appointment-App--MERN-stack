@@ -1,10 +1,8 @@
-import { late } from "zod";
 
 export type TDoctor = {
   _id: string;
   name: string;
   email: string;
-  password: string;
   image: string;
   speciality: string;
   degree: string,
@@ -12,12 +10,29 @@ export type TDoctor = {
   about: string;
   available: boolean;
   fees: number;
-  address: Object;
+  address: { line1: string, line2: string },
   phone: string;
   slotsBooked: Object;
   gender: string;
-  role: "admin" | "doctor" | "user";
+  role: "admin" | "doctor";
 }
+
+export type TUser = {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  address: {
+    line1: string;
+    line2: string;
+  }
+  speciality: string;
+  gender: string;
+  dob: string;
+  image: string;
+  role: "admin" | "doctor";
+}
+
 
 type TUserId = {
   _id: string;
@@ -60,7 +75,7 @@ export type TAdminState = {
     totalDoctors: number, 
     totalUsers: number 
   } | null;
-  login: (userInput: {email: string, password: string}) => void;
+  adminLogin: (userInput: {email: string, password: string}) => void;
   logout: () => void;
   addDoctor: (formDta: FormData) => void;
   getAllDoctors: () => Promise<void>;

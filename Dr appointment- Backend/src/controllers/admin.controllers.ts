@@ -60,7 +60,7 @@ export const adminLoginHandler = async (req: Request<{}, {}, TAdminLoginZod["bod
         name: user.name,
         email: user.email,
         role: user.role,
-        Image: user.image,
+        image: user.image,
       }
     })
   } catch (error) {
