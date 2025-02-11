@@ -1,7 +1,7 @@
-import MobileMenu from "./MobileMenu";
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import { assets } from "../../assets/assets"
 import { useState } from "react";
+import MobileMenu from "./MobileMenu";
 import { useUserStore } from "@/store/userStore";
 
 const Navbar = () => {
