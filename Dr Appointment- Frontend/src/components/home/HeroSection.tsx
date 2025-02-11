@@ -1,5 +1,4 @@
 import { assets } from "@/assets/assets"
-import { Link } from "react-router-dom"
 
 const HeroSection = () => {
   return (

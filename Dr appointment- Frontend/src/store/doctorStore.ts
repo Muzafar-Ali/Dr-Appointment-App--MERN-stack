@@ -1,4 +1,3 @@
-import { doctors } from "@/assets/assets";
 import config from "@/config/config";
 import { TUseDoctorStore } from "@/types/doctorType";
 import axios from "axios";

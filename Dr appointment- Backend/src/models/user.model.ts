@@ -70,7 +70,7 @@ userSchema.methods.comparePassword = async function (candidatePassword: string):
   const user = this as TUserDocument;
 
   try {
-    const isMatch = bcrypt.compare(candidatePassword, user.password).catch((e) => false);      
+    const isMatch = await bcrypt.compare(candidatePassword, user.password);      
     return isMatch;
     
   } catch (error) {

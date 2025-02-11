@@ -6,7 +6,6 @@ import { TUserLoginZod, TUserProfileUpdateZod, TUserRegisterZod } from "../schem
 import { createUser, updateUserProfile } from "../services/user.service.js";
 import { AppointmentModel } from "../models/appoinments.model.js";
 import DoctorModel from "../models/doctor.model.js";
-import { date } from "zod";
 import mongoose from "mongoose";
 
 // user registration

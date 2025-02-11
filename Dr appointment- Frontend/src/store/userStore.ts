@@ -11,9 +11,6 @@ export const useUserStore = create<TUseUserStore>() (persist((set) => ({
   registerUser: async(userData: FormData) => {
     set({ loading: true });
     try {
-      userData.forEach((value, key) => {
-        console.log(`${key}: ${value}`);
-      });
       const response = await axios.post(`${config.baseUri}/api/v1/user/register`, userData, {
         headers: {
           "Content-Type": "multipart/form-data",
