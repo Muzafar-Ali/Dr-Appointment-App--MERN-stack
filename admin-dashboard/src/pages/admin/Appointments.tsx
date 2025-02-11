@@ -30,18 +30,18 @@ const Appointments = () => {
           <p>Actions</p>
         </div>
 
-        {appointments.map((item, index) => (
+        {appointments?.map((item, index) => (
           <div key={item._id} className="flex flex-wrap justify-between max-sm:gap-2 sm:grid sm:grid-cols-[0.5fr_3fr_1fr_3fr_3fr_1fr_1fr] items-center text-gray-500  py-3 px-6 border-b hover:bg-gray-50">
             <p>{index + 1}</p>
             <div className="flex items-center gap-2">
-              <img src={item.userId.image} alt={item.userId.name} className="w-8 rounded-full border" /> <p>{item.userId.name}</p>
+              <img src={item.userId?.image} alt={item.userId?.name} className="w-8 rounded-full border" /> <p>{item.userId?.name}</p>
             </div>
-            <p className="max-sm:hidden">{calculateAge(item.userId.dob)}</p>
+            <p className="max-sm:hidden">{calculateAge(item.userId?.dob)}</p>
             <p>{slotDtateFormat(item.slotDate)}, {item.slotTime}</p>
             <div className="flex items-center gap-2">
-              <img src={item.doctorId.image} alt={item.doctorId.name} className="w-8 rounded-full border" /> <p>{item.doctorId.name}</p>
+              <img src={item.doctorId?.image} alt={item.doctorId?.name} className="w-8 rounded-full border" /> <p>{item.doctorId?.name}</p>
             </div>
-            <p>{config.currency} {item.amount}</p>
+            <p>{config.currency} {item?.amount}</p>
 
             <div className="flex items-center gap-2">
               {item.status === "cancelled" && <p className="text-red-400">Cancelled</p>}

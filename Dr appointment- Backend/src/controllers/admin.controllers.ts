@@ -3,6 +3,7 @@ import { TAdminLoginZod, TDoctorZod } from "../schema/admin.schema.js";
 import { createDoctor } from "../services/admin.service.js";
 import ErrorHandler from "../utils/errorClass.js";
 import DoctorModel from "../models/doctor.model.js";
+import UserModel from "../models/user.model.js";
 import generateJwtTokenAndSetCookie from "../utils/generateJwtTokenAndSetCookie.js";
 import { AppointmentModel } from "../models/appoinments.model.js";
 import mongoose from "mongoose";
@@ -45,7 +46,9 @@ export const adminLoginHandler = async (req: Request<{}, {}, TAdminLoginZod["bod
   try {
     const { email, password } = req.body;
 
-    const user = await DoctorModel.findOne({ email });    
+    const user = await UserModel.findOne({ email });   
+    if(user?.role !== "admin") throw new ErrorHandler(404, "Invalid credentials");
+
     if(!user) throw new ErrorHandler( 404, "Invalid credentials");
     
     const isMatch = await user.comparePassword(password);
@@ -64,7 +67,7 @@ export const adminLoginHandler = async (req: Request<{}, {}, TAdminLoginZod["bod
       }
     })
   } catch (error) {
-    console.error('userLogin error: ', error);
+    console.error('adminLoginHandler error: ', error);
     next(error);
   }
 }
@@ -146,7 +149,7 @@ export const adminDashboardHandler = async (req: Request, res: Response, next: N
   try {
     const totalAppointments = await AppointmentModel.countDocuments();
     const totalDoctors = await DoctorModel.countDocuments();
-    const totalUsers = await DoctorModel.countDocuments();
+    const totalUsers = await UserModel.countDocuments();
 
     const appointments = await AppointmentModel.find({}).populate("doctorId", "name email image fees").populate("userId", "name email dob image")
     

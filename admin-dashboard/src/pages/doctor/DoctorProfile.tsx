@@ -26,7 +26,7 @@ const DoctorProfile = () => {
 
   const [profileData, setProfileData] = useState<TDoctor>(defaultUserData);
   const [isEdit, setIsEdit] = useState(false);
-  const [image, setImage] = useState<File | null>(null);
+  // const [image, setImage] = useState<File | null>(null);
 
   useEffect(() => {
     const getProfile = async () => {

@@ -49,9 +49,9 @@ const Dashboard = () => {
         <div className="pt-4 border border-t-0">
           {dashboardData?.latestAppointments.map((appointment) => (
             <div key={appointment._id} className="flex items-center px-6 py-3 gap-3 hover:bg-gray-100">
-              <img src={appointment.doctorId.image} alt={appointment.doctorId.name} className="w-10 rounded-full"/>
+              <img src={appointment.doctorId?.image} alt={appointment.doctorId?.name} className="w-10 rounded-full"/>
               <div className="flex-1 text-sm">
-                <p className="text-gray-800 font-medium">{appointment.doctorId.name}</p>
+                <p className="text-gray-800 font-medium">{appointment.doctorId?.name}</p>
                 <p className="text-gray-600">{slotDtateFormat(appointment.slotDate)}</p>
               </div>
               <div className="flex items-center gap-2">
